@@ -1,0 +1,13 @@
+$primary: #a69680;
+$black: #0d0c10;
+$blue: #100c2a;
+$text-color: $primary;
+$border-radius: .05rem;
+$border-radius-lg: .10rem;
+$border-radius-sm: 0.15rem;
+$vs-colors: (
+    lightest: $text-color,
+    light: $text-color,
+    dark: #333,
+    darkest: rgba(0, 0, 0, 0.15),
+)

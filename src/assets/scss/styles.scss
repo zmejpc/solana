@@ -1,0 +1,70 @@
+body {
+	background-color: $black;
+}
+
+#app {
+	background-color: $black;
+	color: $text-color;
+	margin-bottom: 2rem;
+}
+
+.vs {
+	&__search{
+		display: none;
+	}
+
+	&__dropdown {
+		&-toggle {
+			height: 31px;
+		}
+
+		&-menu {
+			background-color: $black;
+			border-top: 1px solid #a69680;
+			min-width: 100%;
+		}
+
+		&-option {
+			&--highlight {
+				background-color: $black;		
+			}
+		}
+	}
+
+	&__selected {
+		color: $text-color;
+	}
+}
+
+.icon {
+	&-btn {
+		svg {
+			fill: $primary;
+			width: 25px;
+			height: 25px;
+		}
+	}
+}
+
+.block {
+	background-color: $blue;
+	padding: 1rem;
+
+	&__title {
+		margin-bottom: 1rem;
+	}
+}
+
+.text {
+	&-overflow {
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+	}
+}
+
+.font {
+	&-12 {
+		font-size: 12px;
+	}
+}
