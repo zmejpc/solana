@@ -1,5 +1,5 @@
 <template>
-	<div class="d-flex my-4">
+	<div class="d-flex justify-content-center my-4">
 		<button @click="prev" :disabled="page < 2" class="btn btn-primary btn-sm mr-2">
 			<BIconCaretLeft />
 			<span>Prev</span>
@@ -59,5 +59,8 @@ export default {
 <style scoped>
 .v-select {
 	width: 60px;
+}
+svg {
+	margin-bottom: 2px;
 }
 </style>

@@ -1,12 +1,10 @@
 <template>
 	<div class="container">
-		<div class="row mb-4">
-			<div class="col-4">
-				<Stat />
-			</div>
-			<div class="col-8">
-				<div id="chart"></div>
-			</div>
+		<div class="mb-4">
+			<div id="chart"></div>
+		</div>
+		<div class="mb-5">
+			<Stat />
 		</div>
 		<div class="row font-12">
 			<div class="col-6">
@@ -14,7 +12,7 @@
 				<Listings />
 			</div>
 			<div class="col-6">
-				<h4>Activities</h4>
+				<h4>Recently sales</h4>
 				<Activities />
 			</div>
 		</div>

@@ -74,7 +74,7 @@ export default {
 			magiceden.getCollectionActivities(symbol)
 				.then(response => {
 					commit('setChartData', {chartData: response.data})
-					return response.data.filter(el => el.type == 'list')
+					return response.data.filter(el => el.type == 'buyNow')
 				})
 				.then(data => commit('setCollectionActivities', {activities: data}))
 		}

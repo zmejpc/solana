@@ -11,17 +11,22 @@ export default class Chart {
 	seriesData = {
 		'buyNow': {
 			'type': 'effectScatter',
-			'name': 'Buy now',
+			'name': 'Sale',
 			'data': {},
+			'z': 2,
 			'symbolSize': 2,
 			'rippleEffect': {
 				'scale': 10
+			},
+			'tooltip': {
+				'valueFormatter': value => value + '◎'
 			}
 		},
-		'floorPrice': {
+		'list': {
 			'type': 'line',
-			'name': 'Floor price',
+			'name': 'Listed',
 			'data': {},
+			'z': 1,
 			'yAxisIndex': 1,
 			'lineStyle': {
 				'color': '#2a2a40'
@@ -30,11 +35,15 @@ export default class Chart {
 				'color': '#2a2a40'
 			}
 		},
-		'list': {
+		'floorPrice': {
 			'type': 'line',
-			'name': 'List',
+			'name': 'Floor price',
+			'data': {},
+			'z': 3,
 			'smooth': true,
-			'data': {}
+			'tooltip': {
+				'valueFormatter': value => value + '◎'
+			}
 		},
 	}
 
@@ -53,7 +62,6 @@ export default class Chart {
 			this.xAxisData.push(item.blockTime)
 			this.addSeriesData(item)
 		})
-		console.log(this.seriesData)
 	}
 
 	addSeriesData(item) {
@@ -62,10 +70,20 @@ export default class Chart {
 		switch (item.type) {
 
 			case 'buyNow':
-				if (this.seriesData[item.type].data[_date]) {
-					this.seriesData[item.type].data[_date] += item.price
+				if (!item.price) {
+					return
+				}
+
+				if (!this.seriesData[item.type].data[_date]) {
+					this.seriesData[item.type].data[_date] = []
+				}
+
+				this.seriesData[item.type].data[_date].push([item.price])
+
+				if (this.seriesData['floorPrice'].data[_date]) {
+					this.seriesData['floorPrice'].data[_date] = Math.min(this.seriesData['floorPrice'].data[_date], item.price)
 				} else {
-					this.seriesData[item.type].data[_date] = item.price
+					this.seriesData['floorPrice'].data[_date] = item.price
 				}
 			break;
 
@@ -75,14 +93,6 @@ export default class Chart {
 					this.seriesData['list'].data[_date] += (item.type == 'list' ? 1 : -1)
 				} else {
 					this.seriesData['list'].data[_date] = 1
-				}
-
-				if (item.type == 'list') {
-					if (this.seriesData['floorPrice'].data[_date]) {
-						this.seriesData['floorPrice'].data[_date] = Math.min(this.seriesData['floorPrice'].data[_date], item.price)
-					} else {
-						this.seriesData['floorPrice'].data[_date] = item.price
-					}
 				}
 			break;
 
@@ -98,7 +108,7 @@ export default class Chart {
 				data: this.buildSeriesData(item.data)
 			})
 		}
-console.log(data)
+
 		return data
 	}
 
@@ -106,7 +116,15 @@ console.log(data)
 		const data = []
 
 		for (const k in item) {
-			data.push([k, item[k]])
+			if (Array.isArray(item[k])) {
+
+				item[k].forEach((el) => {
+					data.push([k, el])
+				})
+
+			} else {
+				data.push([k, item[k]])
+			}
 		}
 
 		return data
@@ -141,14 +159,26 @@ console.log(data)
 				type: 'scroll',
 				top: '3%'
 			},
+			grid: {
+				left: 60,
+				right: 60,
+				bottom: 60,
+			},
 			xAxis: {
 				data: this.buildxAxisData()
 			},
 			yAxis: [
 				{
+					name: 'Price ◎',
+					nameLocation: 'middle',
+					nameGap: 30,
 					alignTicks: true
 				},
 				{
+					name: 'Quantity',
+					nameLocation: 'middle',
+					nameGap: 30,
+					nameRotate: -90,
 					alignTicks: true,
 					position: 'right'
 				}

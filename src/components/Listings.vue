@@ -10,7 +10,7 @@
 					<img v-else :src="item.extra.img" :alt="item.name" class="img-fluid">
 				</div>
 
-				<div class="col-2 d-flex align-items-center">{{ item.price }}</div>
+				<div class="col-3 d-flex align-items-center">{{ item.price }} ◎</div>
 
 				<div class="col-2 d-flex align-items-center text-center" v-if="item.blockTime">
 					{{ new Date(item.blockTime * 1000).toLocaleDateString() }}<br>
@@ -18,8 +18,8 @@
 				</div>
 				<div class="col-2 d-flex align-items-center" v-else>N/A</div>
 
-				<div class="col-4 d-flex align-items-center">
-					<div class="text-overflow">{{ item.seller }}</div>
+				<div class="col-3 d-flex align-items-center">
+					<div class="text-overflow" title="Seller">{{ item.seller }}</div>
 				</div>
 
 				<div class="col-2 d-flex align-items-center">

@@ -17,10 +17,11 @@
 					{{ new Date(item.blockTime * 1000).toLocaleTimeString() }}
 				</div>
 
-				<div class="col-2">{{ item.price }}</div>
+				<div v-if="item.price" class="col-3 d-flex align-items-center">{{ item.price }} ◎</div>
+				<div v-else class="col-3 d-flex align-items-center">N/A</div>
 
-				<div class="col-6 d-flex align-items-center">
-					<div class="text-overflow">{{ item.seller }}</div>
+				<div class="col-5 d-flex align-items-center">
+					<div class="text-overflow" title="Seller">{{ item.seller }}</div>
 				</div>
 
 			</div>
