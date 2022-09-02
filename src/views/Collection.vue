@@ -1,5 +1,6 @@
 <template>
 	<div class="container">
+		<h2>{{ this.$route.params.symbol }}</h2>
 		<div class="mb-4">
 			<div id="chart"></div>
 		</div>

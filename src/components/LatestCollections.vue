@@ -1,5 +1,5 @@
 <template>
-	<Pager @prev="prevPage" @next="nextPage" @perPage="setPerPage" :parent-per-page="perPage" :page="page" />
+	<h2 class="mb-4">Latest collections</h2>
 	<div v-if="collections">
 		<div :key="item.symbol" v-for="item in collections" class="row my-2">
 			<div class="col-1">
@@ -28,7 +28,7 @@ import Magiceden from '../services/magiceden'
 import Pager from './Pager'
 
 export default {
-	name: 'Collections',
+	name: 'LatestCollections',
 	components: {
 		BIconListNested,
 		Pager
@@ -36,7 +36,7 @@ export default {
 	data() {
 		return {
 			page: 1,
-			perPage: 20
+			perPage: 10
 		}
 	},
 	created() {
@@ -44,7 +44,7 @@ export default {
 	},
 	computed: {
 		collections() {
-			return this.$store.state.collections
+			return this.$store.state.latestCollections
 		}
 	},
 	methods: {
@@ -53,6 +53,7 @@ export default {
 		},
 		getCollections() {
 			this.$store.dispatch('getCollections', {
+				block: 'latest',
 				offset: this.perPage * (this.page - 1),
 				limit: this.perPage
 			})

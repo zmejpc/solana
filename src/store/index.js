@@ -8,7 +8,7 @@ export default {
 
   mutations: {
 		setCollections(state, payload) {
-			state.collections = payload.collections
+			state[payload.block + 'Collections'] = payload.collections
 		},
 
 		setStatData(state, payload) {
@@ -29,21 +29,21 @@ export default {
   },
 
   actions: {
-		async getCollections({ dispatch, commit }, { offset, limit }) {
+		async getCollections({ dispatch, commit }, { block, offset, limit }) {
 
 			await magiceden.getCollections(offset, limit)
-				.then(response => dispatch('fillCollections', response.data))
+				.then(response => dispatch('fillCollections', {block: block, data: response.data}))
 		},
 
-		async fillCollections({ commit }, data) {
+		async fillCollections({ commit }, {block, data}) {
 
 			const collections = await Promise.all(data.map(async item => {
-				await magiceden.getCollectionStat(item.symbol)
-					.then(response => item.floor = response.data.floorPrice)
+				// await magiceden.getCollectionStat(item.symbol)
+				// 	.then(response => item.floor = response.data.floorPrice)
 				return item
 			}))
 
-			commit('setCollections', {collections: collections})
+			commit('setCollections', {block: block, collections: collections})
 		},
 
 		getStatData({ commit }, symbol) {
@@ -78,6 +78,5 @@ export default {
 				})
 				.then(data => commit('setCollectionActivities', {activities: data}))
 		}
-
   }
 }

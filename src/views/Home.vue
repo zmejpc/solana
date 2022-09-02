@@ -1,16 +1,23 @@
 <template>
 	<div class="container">
-		<Collections />
+		<TopCollections />
+		<div class="mt-5"></div>
+		<LatestCollections />
 	</div>
+	<ConnectWallet />
 </template>
 
 <script>
-import Collections from '../components/Collections.vue'
+import LatestCollections from '../components/LatestCollections.vue'
+import TopCollections from '../components/TopCollections.vue'
+import ConnectWallet from '../components/ConnectWallet.vue'
 
 export default {
 	name: 'Home',
 	components: {
-		Collections
+		LatestCollections,
+		TopCollections,
+		ConnectWallet
 	},
 	methods: {
 
