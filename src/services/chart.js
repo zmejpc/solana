@@ -147,11 +147,7 @@ export default class Chart {
 
 	getOptions() {
 		return {
-			title: {
-				text: 'Activities',
-				left: '1%',
-				top: '3%'
-			},
+			title: null,
 			tooltip: {
 				trigger: 'axis'
 			},

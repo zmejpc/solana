@@ -32,14 +32,17 @@ export default {
 		async getCollections({ dispatch, commit }, { block, offset, limit }) {
 
 			await magiceden.getCollections(offset, limit)
-				.then(response => dispatch('fillCollections', {block: block, data: response.data}))
+				.then(response => dispatch('fillCollections', {
+					block: block,
+					data: response.data.filter(el => el.symbol)
+				}))
 		},
 
 		async fillCollections({ commit }, {block, data}) {
 
 			const collections = await Promise.all(data.map(async item => {
-				// await magiceden.getCollectionStat(item.symbol)
-				// 	.then(response => item.floor = response.data.floorPrice)
+				await magiceden.getCollectionStat(item.symbol)
+					.then(response => item.floor = response.data.floorPrice)
 				return item
 			}))
 

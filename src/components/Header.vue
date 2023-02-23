@@ -41,4 +41,7 @@ header {
 .logo {
   max-width: 100px;
 }
+.nav-link a {
+  color: $light-blue;
+}
 </style>

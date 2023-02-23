@@ -44,7 +44,7 @@ export default {
 			return this.$store.state.collectionActivities
 		}
 	},
-	created() {
+	mounted() {
 		this.$store.dispatch('getCollectionActivities', this.$route.params.symbol)
 	},
 	methods: {

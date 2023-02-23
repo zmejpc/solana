@@ -3,7 +3,7 @@ import axios from 'axios'
 export default class Magiceden {
 
 	getHost() {
-		return process.env.NODE_ENV === 'production' ? '/api' : 'https://api-devnet.magiceden.dev/v2'
+		return process.env.NODE_ENV === 'production' ? '/api' : 'https://api-mainnet.magiceden.dev/v2'
 	}
 
 	async getCollections(offset, limit) {

@@ -63,13 +63,18 @@
 		z-index: 1;
 		font-size: 13px;
 	}
+
+	a {
+		color: $light-blue;
+	}
 }
 [name="search"] {
 	border-radius: 10px;
-	border-color: $primary;
+	border-color: $light-blue;
 	background-color: #000;
 
 	&:focus, &:disabled {
+		border-color: $light-blue;
 		background-color: #000;
 	}
 }

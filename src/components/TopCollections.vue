@@ -11,9 +11,9 @@
 				</router-link>
 			</div>
 			<div class="col-2 d-flex align-items-center">{{ item.name }}</div>
-			<div class="col-6 d-flex align-items-center">{{ item.floor || 'N/A' }}</div>
+			<div class="col-6 d-flex align-items-center">{{ item.floor ? item.floor + ' ◎' : 'N/A' }}</div>
 			<div class="col-3 d-flex align-items-center">
-				<router-link :to="{name: 'Collection', params: {symbol: item.symbol}}" title="Listings">
+				<router-link :to="{name: 'Collection', params: {symbol: item.symbol}}" title="Listings" class="icon-btn">
 					<BIconListNested />
 				</router-link>
 			</div>
@@ -36,7 +36,7 @@ export default {
 	data() {
 		return {
 			page: 1,
-			perPage: 10
+			perPage: 20
 		}
 	},
 	created() {
@@ -49,7 +49,7 @@ export default {
 	},
 	methods: {
 		isVideo(src) {
-			return src.match(/\.mp4/)
+			return src && src.match(/\.mp4/)
 		},
 		getCollections() {
 			this.$store.dispatch('getCollections', {

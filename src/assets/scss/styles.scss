@@ -1,11 +1,14 @@
 body {
-	background-color: $black;
+	background-color: $blue;
+}
+
+h2, h4 {
+	color: #fff;
 }
 
 #app {
-	background-color: $black;
+	background-color: $blue;
 	color: $text-color;
-	margin-bottom: 2rem;
 }
 
 .vs {
@@ -39,7 +42,7 @@ body {
 .icon {
 	&-btn {
 		svg {
-			fill: $primary;
+			fill: $light-blue;
 			width: 25px;
 			height: 25px;
 		}
