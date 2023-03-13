@@ -3,7 +3,7 @@
 	<div v-if="collections">
 		<div :key="item.symbol" v-for="item in collections" class="row my-2">
 			<div class="col-1">
-				<router-link :to="{name: 'Collection', params: {symbol: item.symbol}}" title="Listings">
+				<router-link :to="{name: 'Collection', params: {symbol: item.symbol, collectionName: item.name}}" title="Listings">
 					<video v-if="isVideo(item.image)" autoplay muted loop class="w-100">
 						<source :src="item.image" type="video/mp4">
 					</video>
@@ -13,7 +13,7 @@
 			<div class="col-2 d-flex align-items-center">{{ item.name }}</div>
 			<div class="col-6 d-flex align-items-center">{{ item.floor ? item.floor + ' ◎' : 'N/A' }}</div>
 			<div class="col-3 d-flex align-items-center">
-				<router-link :to="{name: 'Collection', params: {symbol: item.symbol}}" title="Listings" class="icon-btn">
+				<router-link :to="{name: 'Collection', params: {symbol: item.symbol, collectionName: item.name}}" title="Listings" class="icon-btn">
 					<BIconListNested />
 				</router-link>
 			</div>
@@ -28,7 +28,7 @@ import Magiceden from '../services/magiceden'
 import Pager from './Pager'
 
 export default {
-	name: 'TopCollections',
+	name: 'AllCollections',
 	components: {
 		BIconListNested,
 		Pager

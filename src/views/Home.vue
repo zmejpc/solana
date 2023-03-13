@@ -1,26 +1,21 @@
 <template>
 	<div class="container">
-		<TopCollections />
-		<div class="mt-5"></div>
 		<LatestCollections />
+		<div class="mt-5"></div>
+		<!-- <AllCollections /> -->
 	</div>
 	<ConnectWallet />
 </template>
 
-<script>
+<script setup>
 import LatestCollections from '../components/LatestCollections.vue'
-import TopCollections from '../components/TopCollections.vue'
+import AllCollections from '../components/AllCollections.vue'
 import ConnectWallet from '../components/ConnectWallet.vue'
+import { useMainStore } from '@/stores/main'
+import { onMounted } from 'vue'
 
-export default {
-	name: 'Home',
-	components: {
-		LatestCollections,
-		TopCollections,
-		ConnectWallet
-	},
-	methods: {
+const store = useMainStore()
 
-	}
-};
+onMounted(() => store.loadCollections());
+
 </script>

@@ -3,39 +3,36 @@
 	<button v-else @click="connect" class="btn btn-sm btn-warning">Conntect wallet</button>
 </template>
 
-<script>
-	export default {
-		name: 'ConnectWallet',
-		data() {
-			return {
-				connected: false
-			}
-		},
-		mounted() {
-			if (window.solana) {
-				window.solana.connect().then((x) => {
-					this.connected = window.solana.isConnected
-				})
-			}
-		},
-		methods: {
-			connect() {
-				if (!window.solana) {
-					alert('You need "Phantom" extension for browser')
-				} else {
-					window.solana.connect().then((x) => {
-						this.connected = window.solana.isConnected
-						// console.log(x.publicKey.toString())
-					})
-				}
-			},
-			disconnect() {
-				window.solana.disconnect().then((x) => {
-					this.connected = window.solana.isConnected
-				})
-			}
-		}
-	};
+<script setup>
+import { ref, onMounted } from 'vue'
+
+let connected = ref(false)
+
+onMounted(() => {
+	if (window.solana) {
+		window.solana.connect().then((x) => {
+			connected = window.solana.isConnected
+		})
+	}
+})
+
+function connect() {
+	if (!window.solana) {
+		alert('You need "Phantom" extension for browser')
+	} else {
+		window.solana.connect().then((x) => {
+			connected = window.solana.isConnected
+			// console.log(x.publicKey.toString())
+		})
+	}
+}
+
+function disconnect() {
+	window.solana.disconnect().then((x) => {
+		connected = window.solana.isConnected
+	})
+}
+
 </script>
 
 <style lang="scss" scoped>

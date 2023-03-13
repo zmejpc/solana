@@ -5,7 +5,7 @@
 
 				<div class="col-2">
 					<div v-if="item.image">
-						<video v-if="isVideo(item.image)" autoplay muted loop class="w-100">
+						<video v-if="useIsVideo(item.image)" autoplay muted loop class="w-100">
 							<source :src="item.image" type="video/mp4">
 						</video>
 						<img v-else :src="item.image" :alt="item.name" class="img-fluid">
@@ -29,28 +29,10 @@
 	</div>
 </template>
 
-<script>
+<script setup>
+import { useIsVideo } from '@/services/composables'
+import { defineProps } from 'vue'
 
-export default {
-	name: 'Activities',
-	data() {
-		return {
-			page: 1,
-			perPage: 5
-		}
-	},
-	computed: {
-		activities() {
-			return this.$store.state.collectionActivities
-		}
-	},
-	mounted() {
-		this.$store.dispatch('getCollectionActivities', this.$route.params.symbol)
-	},
-	methods: {
-		isVideo(src) {
-			return src.match(/\.mp4/)
-		}
-	}
-};
+const props = defineProps(['activities']);
+
 </script>

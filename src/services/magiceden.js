@@ -11,7 +11,7 @@ export default class Magiceden {
 		const config = {
 			method: 'get',
 			url: `${this.getHost()}/collections?offset=${offset}&limit=${limit}`,
-			headers: {}
+			headers: {'ME-Pub-API-Metadata': '{"paging":true}'}
 		};
 
 		return await axios(config)
@@ -32,7 +32,7 @@ export default class Magiceden {
 
 		const config = {
 			method: 'get',
-			url: `${this.getHost()}/collections/${symbol}/activities?offset=0&limit=1000`,
+			url: `${this.getHost()}/collections/${symbol}/activities?offset=0&limit=100`,
 			headers: { }
 		};
 

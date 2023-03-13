@@ -5,7 +5,7 @@
 			<div :key="item.symbol" v-for="item in results" class="row mt-2">
 				<div class="col-4">
 					<router-link :to="{name: 'Collection', params: {symbol: item.symbol}}">
-						<video v-if="isVideo(item.image)" autoplay muted loop class="w-100">
+						<video v-if="useIsVideo(item.image)" autoplay muted loop class="w-100">
 							<source :src="item.image" type="video/mp4">
 						</video>
 						<img v-else :src="item.image" :alt="item.name" class="img-fluid">
@@ -21,35 +21,50 @@
 	</div>
 </template>
 
-<script>
-	export default {
-		name: 'Search',
-		methods: {
-			isVideo(src) {
-				return src.match(/\.mp4/)
-			},
-			search(e) {
-				if (e.keyCode == 13) {
+<script setup>
+import { useIsVideo } from '@/services/composables'
+import { useMainStore } from '@/stores/main'
+import { ref } from 'vue'
 
-					this.results = this.$store.state.topCollections.filter(el => el.name.indexOf(e.target.value) > -1)
+const store = useMainStore()
 
-					document.addEventListener('click', (e) => {
-						if (!e.target.closest('.search__results') || e.target.tagName == 'A') {
-							this.results = []
-						}
-					}, {once: true})
+const max_results = 10
 
-				} else if(e.keyCode == 27) {
-					this.results = []
-				}
-			}
-		},
-		data() {
-			return {
-				results: Array
-			}
+let results = ref([])
+
+
+async function search(e) {
+	if (e.keyCode == 13) {
+
+		let tmpResults = []
+		let index = 0
+
+		if (!store.collections.length) {
+			await store.loadCollections()
 		}
-	};
+
+		while(store.collections[index] && tmpResults.length <= max_results) {
+
+			if (store.collections[index].name.match(new RegExp(e.target.value, 'i'))) {
+				tmpResults.push(store.collections[index])
+			}
+
+			index++
+		}
+
+		results.value = tmpResults
+
+		document.addEventListener('click', (e) => {
+			if (!e.target.closest('.search__results') || e.target.tagName == 'A') {
+				results.value = []
+			}
+		}, {once: true})
+
+	} else if(e.keyCode == 27) {
+		results.value = []
+	}
+}
+
 </script>
 
 <style lang="scss" scoped>
@@ -72,10 +87,12 @@
 	border-radius: 10px;
 	border-color: $light-blue;
 	background-color: #000;
+	color: #fff;
 
 	&:focus, &:disabled {
 		border-color: $light-blue;
 		background-color: #000;
+		color: #fff;
 	}
 }
 </style>

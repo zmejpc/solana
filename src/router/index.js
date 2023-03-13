@@ -11,7 +11,8 @@ const routes = [
   {
     path: '/collection/:symbol',
     name: 'Collection',
-    component: Collection
+    component: Collection,
+    props: true,
   }
 ]
 

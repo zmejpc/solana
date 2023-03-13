@@ -1,79 +1,52 @@
 <template>
-	<h2 class="mb-4">Latest collections</h2>
+	<h2 class="mb-4" id="latest-collections">Latest collections</h2>
 	<div v-if="collections">
-		<div :key="item.symbol" v-for="item in collections" class="row my-2">
-			<div class="col-1">
-				<router-link :to="{name: 'Collection', params: {symbol: item.symbol}}" title="Listings">
-					<video v-if="isVideo(item.image)" autoplay muted loop class="w-100">
-						<source :src="item.image" type="video/mp4">
-					</video>
-					<img v-else :src="item.image" :alt="item.name" class="img-fluid">
-				</router-link>
-			</div>
-			<div class="col-2 d-flex align-items-center">{{ item.name }}</div>
-			<div class="col-6 d-flex align-items-center">{{ item.floor ? item.floor + ' ◎' : 'N/A' }}</div>
-			<div class="col-3 d-flex align-items-center">
-				<router-link :to="{name: 'Collection', params: {symbol: item.symbol}}" title="Listings" class="icon-btn">
-					<BIconListNested />
-				</router-link>
-			</div>
+		<div :key="item.symbol" v-for="item in collections">
+			<CollectionItem :collection="item" />
 		</div>
 	</div>
-	<Pager @prev="prevPage" @next="nextPage" @perPage="setPerPage" :parent-per-page="perPage" :page="page" />
+	<Pager @prev="prevPage" @next="nextPage" :page="page" />
 </template>
 
-<script>
-import { BIconListNested } from 'bootstrap-icons-vue'
-import Magiceden from '../services/magiceden'
+<script setup>
+import CollectionItem from './CollectionItem'
+import { useMainStore } from '@/stores/main'
 import Pager from './Pager'
+import { ref } from 'vue'
 
-export default {
-	name: 'LatestCollections',
-	components: {
-		BIconListNested,
-		Pager
-	},
-	data() {
-		return {
-			page: 1,
-			perPage: 20
-		}
-	},
-	created() {
-		this.getCollections()
-	},
-	computed: {
-		collections() {
-			return this.$store.state.latestCollections
-		}
-	},
-	methods: {
-		isVideo(src) {
-			return src && src.match(/\.mp4/)
-		},
-		getCollections() {
-			this.$store.dispatch('getCollections', {
-				block: 'latest',
-				offset: this.perPage * (this.page - 1),
-				limit: this.perPage
-			})
-		},
-		prevPage() {
-			if (this.page > 1) {
-				this.page--
-				this.getCollections()
-			}
-		},
-		nextPage() {
-			this.page++
-			this.getCollections()
-		},
-		setPerPage(perPage) {
-			this.perPage = perPage
-			this.getCollections()
-		}
+const store = useMainStore()
+
+let collections = ref([])
+
+const perPage = 20
+
+let page = ref(1)
+
+store.$subscribe(getCollections)
+
+function getCollections() {
+	const start = perPage * (page.value - 1)
+	collections.value = store.collections.slice(start, start + perPage)
+}
+
+function prevPage() {
+	if (page.value > 1) {
+		page.value--
+		getCollections()
+		scroll()
 	}
-};
+}
+
+function nextPage() {
+	page.value++
+	getCollections()
+	scroll()
+}
+
+function scroll() {
+	const block = document.getElementById('latest-collections')
+	window.scrollTo(0,block.offsetHeight)
+}
 </script>
 
 <style>

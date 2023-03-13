@@ -64,8 +64,15 @@ export default class Chart {
 		})
 	}
 
+	buidDateString(_Date) {
+		
+		return _Date.toLocaleDateString()+' '+(_Date.toLocaleTimeString()).replace(/(\d{2}):(\d{2})$/, '00');
+	}
+
 	addSeriesData(item) {
-		const _date = new Date(item.blockTime * 1000).toLocaleDateString()
+
+		const _Date = new Date(item.blockTime * 1000)
+		const _date = this.buidDateString(_Date)
 
 		switch (item.type) {
 
@@ -136,11 +143,11 @@ export default class Chart {
 		const today = new Date
 
 		while (currDate <= today) {
-			data.push(currDate.toLocaleDateString())
-			currDate.setDate(currDate.getDate() + 1)
+			data.push(this.buidDateString(currDate))
+			currDate.setHours(currDate.getHours() + 1)
 		}
 
-		data.push(currDate.toLocaleDateString())
+		data.push(this.buidDateString(currDate))
 
 		return data
 	}
