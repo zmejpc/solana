@@ -17,14 +17,20 @@
 				<div class="col-4">
 					<span class="badge bg-danger mr-2">Floor price</span>
 				</div>
-				<div v-if="statData.floorPrice" class="col-8">{{ statData.floorPrice }} ◎</div>
+				<div v-if="statData.floorPrice" class="col-8">
+					<img :src="SolanaIcon" alt="Sol" class="Va(sub)">
+					{{ (statData.floorPrice / 1000000000).toFixed(2) }}
+				</div>
 				<div v-else class="col-8">N/A</div>
 			</div>
 			<div class="row mb-2">
 				<div class="col-4">
 					<span class="badge bg-warning mr-2">Total volume</span>
 				</div>
-				<div v-if="statData.volumeAll" class="col-8">{{ statData.volumeAll }} ◎</div>
+				<div v-if="statData.volumeAll" class="col-8">
+					<img :src="SolanaIcon" alt="Sol" class="Va(sub)">
+					{{ (statData.volumeAll / 1000000000).toFixed(2) }}
+				</div>
 				<div v-else class="col-8">N/A</div>
 			</div>
 		</div>
@@ -47,7 +53,7 @@
 				<div class="col-4">
 					<span class="badge bg-warning mr-2">Total volume</span>
 				</div>
-				<div v-if="dayVolume" class="col-8">{{ dayVolume }} ◎</div>
+				<div v-if="dayVolume" class="col-8">{{ dayVolume.toFixed(1) }} ◎</div>
 				<div v-else class="col-8">N/A</div>
 			</div>
 		</div>
@@ -55,6 +61,7 @@
 </template>
 
 <script setup>
+import SolanaIcon from '@/assets/svg/solana.svg'
 import { ref, watch, defineProps } from 'vue'
 
 const props = defineProps(['statData', 'chartData'])
@@ -65,7 +72,7 @@ let dayListed = ref(0)
 
 let dayVolume = ref(0)
 
-watch(props.chartData, setDayData)
+watch(() => props.chartData, setDayData)
 
 function setDayData() {
 	const date = new Date()

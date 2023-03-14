@@ -8,7 +8,7 @@
 						<video v-if="useIsVideo(item.image)" autoplay muted loop class="w-100">
 							<source :src="item.image" type="video/mp4">
 						</video>
-						<img v-else :src="item.image" :alt="item.name" class="img-fluid">
+						<img v-else :data-src="item.image" :alt="item.name" class="img-fluid lazyload">
 					</div>
 				</div>
 
@@ -17,10 +17,14 @@
 					{{ new Date(item.blockTime * 1000).toLocaleTimeString() }}
 				</div>
 
-				<div v-if="item.price" class="col-3 d-flex align-items-center">{{ item.price }} ◎</div>
-				<div v-else class="col-3 d-flex align-items-center">N/A</div>
+				<div v-if="item.price" class="col-2 d-flex align-items-center">{{ item.price }} ◎</div>
+				<div v-else class="col-2 d-flex align-items-center">N/A</div>
 
-				<div class="col-5 d-flex align-items-center">
+				<div class="col-2 d-flex align-items-center">
+					<div class="text-overflow" title="Seller">{{ item.type }}</div>
+				</div>
+
+				<div class="col-4 d-flex align-items-center">
 					<div class="text-overflow" title="Seller">{{ item.seller }}</div>
 				</div>
 

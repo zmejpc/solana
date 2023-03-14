@@ -17,22 +17,22 @@ export default class Magiceden {
 		return await axios(config)
 	}
 
-	async getCollectionListings(symbol) {
+	async getCollectionListings(symbol, offset, limit) {
 
 		const config = {
 			method: 'get',
-			url: `${this.getHost()}/collections/${symbol}/listings?offset=0&limit=20`,
+			url: `${this.getHost()}/collections/${symbol}/listings?offset=${offset}&limit=${limit}`,
 			headers: { }
 		};
 
 		return await axios(config)
 	}
 
-	async getCollectionActivities(symbol) {
+	async getCollectionActivities(symbol, offset, limit) {
 
 		const config = {
 			method: 'get',
-			url: `${this.getHost()}/collections/${symbol}/activities?offset=0&limit=100`,
+			url: `${this.getHost()}/collections/${symbol}/activities?offset=${offset}&limit=${limit}`,
 			headers: { }
 		};
 

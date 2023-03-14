@@ -50,28 +50,63 @@ let listings = ref([])
 let statData = ref([])
 
 onMounted(getData)
+
 watch(() => props.symbol, getData);
 
-async function getData() {
-	magiceden.getCollectionActivities(props.symbol)
-		.then(response => {
+watch(() => chartData.value, () => {
+	chart.value = new Chart(chartData.value)
+	chart.value.init(document.getElementById('chart'))
 
-			chartData.value = response.data
-			chart.value = new Chart(chartData.value)
-			chart.value.init(document.getElementById('chart'))
+	activities.value = chartData.value.filter(el => {
+		return ['buyNow'].indexOf(el.type) > -1
+	})
+});
 
-			activities.value = response.data.filter(el => el.type == 'buyNow')
-		})
+async function loadActivities(page = 1, limit = 500) {
 
-	await magiceden.getCollectionListings(props.symbol)
+	if (page > 40) {
+		return
+	}
+
+	magiceden.getCollectionActivities(props.symbol, limit * (page - 1), limit)
 		.then(async response => {
-			listings.value = await Promise.all(response.data.map(async item => {
-				await magiceden.getTokenListings(item.tokenMint).then(tokenResponse => {
-					item.blockTime = (tokenResponse.data.find(el => el.type == 'list') || {}).blockTime
-				})
-				return item
-			}))
+
+			if (response.data.length) {
+
+				chartData.value = chartData.value.concat(response.data.filter(el => {
+					return ['buyNow', 'list', 'delist'].indexOf(el.type) > -1
+				}))
+
+				const date = new Date
+				date.setHours(0, 0, 0, 0)
+
+				if (response.data.slice(response.data.length - 1)[0].blockTime > date.valueOf() / 1000) {
+					await loadActivities(page + 1)
+				}
+			}
 		})
+}
+
+async function loadListings(page = 1, limit = 20) {
+
+	if (page > 10) {
+		return
+	}
+
+	magiceden.getCollectionListings(props.symbol, limit * (page - 1), limit)
+		.then(async response => {
+
+			if (response.data.length) {
+				listings.value = listings.value.concat(response.data)
+				await loadListings(page + 1)
+			}
+		})
+}
+
+async function getData() {
+
+	await loadActivities()
+	await loadListings()
 
 	magiceden.getCollectionStat(props.symbol)
 		.then(response => statData.value = response.data)
