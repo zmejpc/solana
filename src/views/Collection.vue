@@ -1,8 +1,8 @@
 <template>
 	<div class="container">
 		<h2>{{ collectionName || symbol }}</h2>
-		<div class="mb-4">
-			<div id="chart"></div>
+		<div class="mb-4" v-if="statData.listedCount">
+			<VueChart :chartData="chartData" :listedCount="statData.listedCount" />
 		</div>
 	</div>
 	<div class="stat-bg py-3 mb-5">
@@ -14,13 +14,13 @@
 		<div class="row font-12">
 			<div class="col-6">
 				<h4>Listings</h4>
-				<div class="scrollable">
+				<div>
 					<Listings :listings="listings" />
 				</div>
 			</div>
 			<div class="col-6">
 				<h4>Recently sales</h4>
-				<div class="scrollable">
+				<div>
 					<Activities :activities="activities" />
 				</div>
 			</div>
@@ -31,15 +31,13 @@
 <script setup>
 import { ref, watch, onMounted, defineProps } from 'vue'
 import Activities from '../components/Activities.vue'
+import VueChart from '../components/VueChart.vue'
 import Listings from '../components/Listings.vue'
 import Magiceden from '../services/magiceden'
 import Stat from '../components/Stat.vue'
-import Chart from '../services/chart'
 
 const props = defineProps(['symbol', 'collectionName'])
 const magiceden = new Magiceden
-
-let chart = ref(Object)
 
 let activities = ref([])
 
@@ -49,22 +47,23 @@ let listings = ref([])
 
 let statData = ref([])
 
+const lists_limit = 100
+
 onMounted(getData)
 
 watch(() => props.symbol, getData);
 
-watch(() => chartData.value, () => {
-	chart.value = new Chart(chartData.value)
-	chart.value.init(document.getElementById('chart'))
+watch(() => chartData, () => {
 
 	activities.value = chartData.value.filter(el => {
 		return ['buyNow'].indexOf(el.type) > -1
-	})
+	}).slice(0, lists_limit)
+
 });
 
 async function loadActivities(page = 1, limit = 500) {
 
-	if (page > 40) {
+	if (page > 20) {
 		return
 	}
 
@@ -78,6 +77,7 @@ async function loadActivities(page = 1, limit = 500) {
 				}))
 
 				const date = new Date
+				// date.setDate(date.getDate() - 1)
 				date.setHours(0, 0, 0, 0)
 
 				if (response.data.slice(response.data.length - 1)[0].blockTime > date.valueOf() / 1000) {
@@ -98,32 +98,30 @@ async function loadListings(page = 1, limit = 20) {
 
 			if (response.data.length) {
 				listings.value = listings.value.concat(response.data)
-				await loadListings(page + 1)
+
+				if (listings.value.length > lists_limit) {
+					listings.value = listings.value.slice(0, lists_limit)
+				} else {
+					await loadListings(page + 1)
+				}
 			}
 		})
 }
 
 async function getData() {
+	chartData.value = []
+	activities.value = []
+
+	await magiceden.getCollectionStat(props.symbol)
+		.then(response => statData.value = response.data)
 
 	await loadActivities()
 	await loadListings()
-
-	magiceden.getCollectionStat(props.symbol)
-		.then(response => statData.value = response.data)
 }
 
 </script>
 
 <style lang="scss" scoped>
-#chart {
-	height: 400px;
-}
-
-.scrollable {
-	max-height: 400px;
-	overflow-y: scroll;
-	overflow-x: hidden;
-}
 
 .stat-bg {
 	background-color: $black;

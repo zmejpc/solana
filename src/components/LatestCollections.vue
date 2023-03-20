@@ -45,7 +45,7 @@ function nextPage() {
 
 function scroll() {
 	const block = document.getElementById('latest-collections')
-	window.scrollTo(0,block.offsetHeight)
+	window.scrollTo(0,block.offsetTop)
 }
 </script>
 

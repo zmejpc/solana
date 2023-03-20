@@ -37,9 +37,10 @@
 <script setup>
 import { BIconListNested } from 'bootstrap-icons-vue'
 import SolanaIcon from '@/assets/svg/solana.svg'
+import Magiceden from '@/services/magiceden'
 import { ref, onMounted } from 'vue'
-import axios from 'axios'
 
+const magiceden = new Magiceden
 
 const config = {
 	method: 'get',
@@ -50,7 +51,7 @@ const config = {
 let collections = ref([])
 
 onMounted(async function getData() {
-	collections.value = await axios(config).then(r => r.data)
+	collections.value = await magiceden.getTopCollections().then(r => r.data)
 });
 
 </script>

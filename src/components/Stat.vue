@@ -9,13 +9,13 @@
 			</div>
 			<div class="row mb-2">
 				<div class="col-4">
-					<span class="badge bg-warning mr-2">Listed</span>
+					<span class="badge bg-success mr-2">Listed</span>
 				</div>
 				<div class="col-8">{{ statData.listedCount }}</div>
 			</div>
 			<div class="row mb-2">
 				<div class="col-4">
-					<span class="badge bg-danger mr-2">Floor price</span>
+					<span class="badge bg-success mr-2">Floor price</span>
 				</div>
 				<div v-if="statData.floorPrice" class="col-8">
 					<img :src="SolanaIcon" alt="Sol" class="Va(sub)">
@@ -25,7 +25,7 @@
 			</div>
 			<div class="row mb-2">
 				<div class="col-4">
-					<span class="badge bg-warning mr-2">Total volume</span>
+					<span class="badge bg-success mr-2">Total volume</span>
 				</div>
 				<div v-if="statData.volumeAll" class="col-8">
 					<img :src="SolanaIcon" alt="Sol" class="Va(sub)">
@@ -44,7 +44,7 @@
 			</div>
 			<div class="row mb-2">
 				<div class="col-4">
-					<span class="badge bg-danger mr-2">Floor price</span>
+					<span class="badge bg-warning mr-2">Floor price</span>
 				</div>
 				<div v-if="dayFloorPrice" class="col-8">{{ dayFloorPrice }} ◎</div>
 				<div v-else class="col-8">N/A</div>
@@ -78,7 +78,9 @@ function setDayData() {
 	const date = new Date()
 	const startTime = date.setDate(date.getDate() - 1)
 
-	let floorPrice
+	let tmpFloorPrice = 0
+	let tmpDayListed = 0
+	let tmpDayVolume = 0
 
 	props.chartData.forEach(el => {
 		let time = el.blockTime * 1000
@@ -89,21 +91,23 @@ function setDayData() {
 
 		switch (el.type) {
 			case 'list':
-				dayListed.value++
+				tmpDayListed++
 
-				if (!floorPrice) {
-					floorPrice = el.price
+				if (!tmpFloorPrice) {
+					tmpFloorPrice = el.price
 				}
 
-				floorPrice = Math.min(floorPrice, el.price)
+				tmpFloorPrice = Math.min(tmpFloorPrice, el.price)
 			break;
 			case 'buyNow':
-				dayVolume.value += el.price
+				tmpDayVolume += el.price
 			break;
 		}
 	})
 
-	dayFloorPrice.value = floorPrice
+	dayFloorPrice.value = tmpFloorPrice
+	dayListed.value = tmpDayListed
+	dayVolume.value = tmpDayVolume
 }
 
 </script>

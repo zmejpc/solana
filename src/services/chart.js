@@ -2,11 +2,11 @@ import * as echarts from 'echarts';
 
 export default class Chart {
 
-	listAmount = []
-
 	xAxisData = []
 
 	data = []
+
+	listedCount = 0
 
 	seriesData = {
 		'buyNow': {
@@ -47,12 +47,14 @@ export default class Chart {
 		},
 	}
 
-	constructor(data) {
+	constructor(data, listedCount) {
 		this.data = data
+		this.listedCount = listedCount
+		this.xAxisData = []
 	}
 
 	init(domEl) {
-		const myChart = echarts.init(domEl, 'dark')
+		const myChart = echarts.getInstanceByDom(domEl) || echarts.init(domEl, 'dark')
 		this.prepareData()
 		myChart.setOption(this.getOptions())
 	}
@@ -66,7 +68,7 @@ export default class Chart {
 
 	buidDateString(_Date) {
 		
-		return _Date.toLocaleDateString()+' '+(_Date.toLocaleTimeString()).replace(/(\d{2}):(\d{2})$/, '00');
+		return _Date.toLocaleDateString()+' '+(_Date.toLocaleTimeString())//.replace(/(\d{2}):(\d{2})$/, '00');
 	}
 
 	addSeriesData(item) {
@@ -87,6 +89,12 @@ export default class Chart {
 
 				this.seriesData[item.type].data[_date].push([item.price])
 
+				if (this.seriesData['list'].data[_date] !== undefined) {
+					this.seriesData['list'].data[_date] -= 1
+				} else {
+					this.seriesData['list'].data[_date] = -1
+				}
+
 				if (this.seriesData['floorPrice'].data[_date]) {
 					this.seriesData['floorPrice'].data[_date] = Math.min(this.seriesData['floorPrice'].data[_date], item.price)
 				} else {
@@ -96,10 +104,10 @@ export default class Chart {
 
 			case 'list':
 			case 'delist':
-				if (this.seriesData['list'].data[_date]) {
+				if (this.seriesData['list'].data[_date] !== undefined) {
 					this.seriesData['list'].data[_date] += (item.type == 'list' ? 1 : -1)
 				} else {
-					this.seriesData['list'].data[_date] = 1
+					this.seriesData['list'].data[_date] = (item.type == 'list' ? 1 : -1)
 				}
 			break;
 
@@ -108,6 +116,22 @@ export default class Chart {
 
 	buildSeries() {
 		const data = []
+
+		let listData = Object.entries(this.seriesData['list'].data), result = []
+
+		for (let i = 0; i < listData.length; i++) {
+
+			if (i == 0) {
+				listData[i][1] = -this.listedCount
+			}
+
+			result[listData[i][0]] = listData
+				.filter((v, _i) => _i <= i)
+				.map(n => n[1] * (-1))
+				.reduce((a, b) => a + b, 0)
+		}
+
+		this.seriesData['list'].data = result
 
 		for (const [type, item] of Object.entries(this.seriesData)) {
 			data.push({
@@ -138,18 +162,21 @@ export default class Chart {
 	}
 
 	buildxAxisData() {
-		const data = []
-		const currDate = new Date(this.xAxisData.sort()[0] * 1000)
-		const today = new Date
 
-		while (currDate <= today) {
-			data.push(this.buidDateString(currDate))
-			currDate.setHours(currDate.getHours() + 1)
-		}
+		return this.xAxisData.sort().map(t => this.buidDateString(new Date(t * 1000)))
 
-		data.push(this.buidDateString(currDate))
+		// const data = []
+		// const currDate = new Date(this.xAxisData.sort()[0] * 1000)
+		// const today = new Date
 
-		return data
+		// while (currDate <= today) {
+		// 	data.push(this.buidDateString(currDate))
+		// 	currDate.setHours(currDate.getHours() + 1)
+		// }
+
+		// data.push(this.buidDateString(currDate))
+
+		// return data
 	}
 
 	getOptions() {
