@@ -26,6 +26,8 @@ provide(THEME_KEY, "dark");
 
 let options = ref({})
 
+let listedCount
+
 const props = defineProps(['chartData', 'listedCount'])
 
 watch(() => props.chartData, setOptions);
@@ -70,6 +72,8 @@ let xAxisData = [], seriesData = {
 }
 
 function setOptions() {
+
+	listedCount = props.listedCount
 
 	seriesData.floorPrice.data = {}
 	seriesData.buyNow.data = {}
@@ -132,22 +136,6 @@ function setOptions() {
 function buildSeries() {
 	const data = []
 
-	let listData = Object.entries(seriesData['list'].data), result = []
-
-	for (let i = 0; i < listData.length; i++) {
-
-		if (i == 0) {
-			listData[i][1] = -props.listedCount
-		}
-
-		result[listData[i][0]] = listData
-			.filter((v, _i) => _i <= i)
-			.map(n => n[1] * (-1))
-			.reduce((a, b) => a + b, 0)
-	}
-
-	seriesData['list'].data = result
-
 	for (const [type, item] of Object.entries(seriesData)) {
 		data.push({
 			...item,
@@ -193,10 +181,8 @@ function addSeriesData(item) {
 
 			seriesData[item.type].data[_date].push([item.price])
 
-			if (seriesData['list'].data[_date] !== undefined) {
-				seriesData['list'].data[_date] -= 1
-			} else {
-				seriesData['list'].data[_date] = -1
+			if (seriesData['list'].data[_date] === undefined) {
+				seriesData['list'].data[_date] = listedCount++
 			}
 
 			if (seriesData['floorPrice'].data[_date]) {
@@ -207,12 +193,11 @@ function addSeriesData(item) {
 		break;
 
 		case 'list':
+			seriesData['list'].data[_date] = listedCount--
+		break;
+
 		case 'delist':
-			if (seriesData['list'].data[_date] !== undefined) {
-				seriesData['list'].data[_date] += (item.type == 'list' ? 1 : -1)
-			} else {
-				seriesData['list'].data[_date] = (item.type == 'list' ? 1 : -1)
-			}
+			seriesData['list'].data[_date] = listedCount++
 		break;
 
 	}

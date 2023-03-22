@@ -59,7 +59,7 @@ watch(() => chartData, () => {
 		return ['buyNow'].indexOf(el.type) > -1
 	}).slice(0, lists_limit)
 
-});
+}, {deep: true});
 
 async function loadActivities(page = 1, limit = 500) {
 
@@ -77,10 +77,9 @@ async function loadActivities(page = 1, limit = 500) {
 				}))
 
 				const date = new Date
-				// date.setDate(date.getDate() - 1)
 				date.setHours(0, 0, 0, 0)
 
-				if (response.data.slice(response.data.length - 1)[0].blockTime > date.valueOf() / 1000) {
+				if (response.data.slice(-1)[0].blockTime > date.valueOf() / 1000) {
 					await loadActivities(page + 1)
 				}
 			}
