@@ -11,8 +11,8 @@
 <script setup>
 import CollectionItem from './CollectionItem'
 import { useMainStore } from '@/stores/main'
+import { ref, onMounted } from 'vue'
 import Pager from './Pager'
-import { ref } from 'vue'
 
 const store = useMainStore()
 
@@ -22,11 +22,11 @@ const perPage = 20
 
 let page = ref(1)
 
-store.$subscribe(getCollections)
+onMounted(() => getCollections());
 
-function getCollections() {
-	const start = perPage * (page.value - 1)
-	collections.value = store.collections.slice(start, start + perPage)
+async function getCollections() {
+	await store.loadCollections(page.value)
+	collections.value = store.collections
 }
 
 function prevPage() {

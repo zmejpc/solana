@@ -1,35 +1,17 @@
-import Magiceden from '../services/magiceden'
+import Tensor from '../services/tensor'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
-const magiceden = new Magiceden
+const tensor = new Tensor
 
 export const useMainStore = defineStore('main', () => {
 
 	let collections = ref([])
 
 	async function loadCollections(page = 1) {
-		const limit = 200;
 
-		await magiceden.getCollections(limit * (page - 1), limit)
-			.then(async response => {
-
-				collections.value = collections.value.concat(response.data.filter(item => item.symbol))
-
-				// collections.value = await Promise.all(data.map(async item => {
-				// 	await magiceden.getCollectionStat(item.symbol)
-				// 		.then(statResponse => item.floor = statResponse.data.floorPrice)
-				// 	return item
-				// }))
-
-				if (response.data.length && page < 15) {
-					loadCollections(page + 1)
-					page++
-				}
-			})
+		collections.value = await tensor.getCollections(page)
 	}
-
-	
 
 	return {
 		collections,
