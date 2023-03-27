@@ -1,10 +1,16 @@
 <template>
-	<div v-if="listings" class="my-3">
+	<div v-if="listings.length">
 		<div :key="item.mint.onchainId" v-for="item in listings">
-			<div class="row my-2">
+			<div class="row mb-2">
 
 				<div class="col-4 d-flex align-items-center">
-					{{ item.name }}
+					<Popper hover>
+						{{ item.name }}
+						<span class="text-primary">?</span>
+						<template #content>
+							<div v-html="useBuildPopperContent(item)"></div>
+						</template>
+					</Popper>
 				</div>
 
 				<div class="col-2 d-flex align-items-center">
@@ -27,15 +33,22 @@
 				</div>
 
 			</div>
+
 		</div>
+	</div>
+	<div v-else>
+		<Loader />
 	</div>
 </template>
 
 <script setup>
+import { useBuildPopperContent } from '@/services/composables'
 import { defineProps, onMounted, ref, watch } from 'vue'
 import { BIconCartCheck } from 'bootstrap-icons-vue'
 import SolanaIcon from '@/assets/svg/solana.svg'
+import Loader from '../components/Loader.vue'
 import Tensor from '../services/tensor'
+import Popper from "vue3-popper"
 
 const tensor = new Tensor
 
@@ -45,10 +58,9 @@ let listings = ref([])
 
 watch(() => props.statData, loadListings);
 
-// onMounted(loadListings)
 
 async function loadListings() {
-	const _listings = await tensor.getCollectionListings(props.statData.slug)
+	const _listings = await tensor.getTSActiveListings(props.statData.slug)
 
 	listings.value = await Promise.all(_listings.map(async listing => {
 		await fetch(`https://public-api.solscan.io/token/meta?tokenAddress=${listing.mint.onchainId}`, {headers: {

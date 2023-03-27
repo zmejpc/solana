@@ -180,7 +180,7 @@ export default class Tensor {
 		return resp.data.instrumentTV2
 	}
 
-	async getCollectionListings(slug) {
+	async getTSActiveListings(slug) {
 		const resp = await this.client.query({
 			query: gql`
 			  	query ActiveListings($slug: String!, $sortBy: ActiveListingsSortBy!, $filters: ActiveListingsFilters, $limit: Int, $cursor: ActiveListingsCursorInput) {
@@ -211,13 +211,84 @@ export default class Tensor {
 				filters: {
 					// sources: ["TENSORSWAP"]
 				},
-				limit: 5,
+				limit: 50,
 					// To get more results, pass `page.endCursor.txKey` from the response
 				cursor: null 
 			}
 		})
 
 		return resp.data.activeListings.txs
+	}
+
+	async getTSActiveOrders(slug) {
+		const resp = await this.client.query({
+			query: gql`
+			  	query TensorSwapActiveOrders($slug: String!) {
+				  tswapOrders(slug: $slug) {
+				    address
+				    createdUnix
+				    curveType
+				    delta
+				    mmCompoundFees
+				    mmFeeBps
+				    nftsForSale {
+				      onchainId
+				    }
+				    nftsHeld
+				    ownerAddress
+				    poolType
+				    solBalance
+				    startingPrice
+						buyNowPrice
+				    sellNowPrice
+				    statsAccumulatedMmProfit
+				    statsTakerBuyCount
+				    statsTakerSellCount
+				    takerBuyCount
+				    takerSellCount
+				    updatedAt
+				  }
+				}
+			`,
+			variables: {
+				slug: slug,
+			}
+		})
+
+		return resp.data.tswapOrders
+	}
+
+	async getHSActiveOrders(slug) {
+		const resp = await this.client.query({
+			query: gql`
+			  	query HadeSwapActiveOrders($slug: String!) {
+				  hswapOrders(slug: $slug) {
+				    address
+				    assetReceiver
+				    baseSpotPrice
+				    boxes {
+				      mint {
+				        onchainId
+				      }
+				    }
+				    buyOrdersQuantity
+				    createdAt
+				    curveType
+				    delta
+				    feeBps
+				    fundsSolOrTokenBalance
+				    lastTransactedAt
+				    mathCounter
+				    pairType
+				  }
+				}
+			`,
+			variables: {
+				slug: slug,
+			}
+		})
+
+		return resp.data.hswapOrders
 	}
 
 	async getCollectionChartData(slug) {

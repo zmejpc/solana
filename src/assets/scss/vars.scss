@@ -7,9 +7,17 @@ $text-color: #fff;
 $border-radius: 0;
 $border-radius-lg: 0;
 $border-radius-sm: 0;
+
 $vs-colors: (
     lightest: $text-color,
     light: $text-color,
     dark: #333,
     darkest: rgba(0, 0, 0, 0.15),
-)
+);
+
+$nav-tabs-link-active-border-color: $light-blue $light-blue transparent $light-blue;
+$nav-tabs-link-hover-border-color: $light-blue $light-blue transparent $light-blue;
+$nav-tabs-link-active-color: $text-color;
+$nav-tabs-border-color: $light-blue;
+$nav-link-hover-color: $light-blue;
+$nav-tabs-link-active-bg: $black;

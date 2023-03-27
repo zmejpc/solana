@@ -5,7 +5,7 @@
 			<VueChart :chartData="chartData" />
 		</div>
 	</div>
-	<div class="stat-bg py-3 mb-5">
+	<div class="bg-black py-3 mb-5">
 		<div class="container">
 			<Stat :statData="statData" />
 		</div>
@@ -14,27 +14,35 @@
 		<div class="font-12">
 			<ul class="nav nav-tabs">
 				<li class="nav-item">
-					<div class="nav-link active" aria-current="page" @click="setActive(TSActiveListings)">
+					<div class="nav-link" :class="{active: activeComponent == TSActiveListings}" aria-current="page" @click="setActive(TSActiveListings)">
 						TS Active Listings
 					</div>
 				</li>
 				<li class="nav-item">
-					<div class="nav-link" @click="setActive(TensorSwapActiveOrders)">
-						TensorSwap Active Orders
+					<div class="nav-link" :class="{active: activeComponent == TSActiveOrders}" @click="setActive(TSActiveOrders)">
+						TS Active Orders
+					</div>
+				</li>
+				<li class="nav-item">
+					<div class="nav-link" :class="{active: activeComponent == HSActiveOrders}" @click="setActive(HSActiveOrders)">
+						HS Active Orders
 					</div>
 				</li>
 			</ul>
-			<KeepAlive>
-				<component :is="activeComponent" :statData="statData"></component>
-			</KeepAlive>
+			<div class="px-3 py-3 bg-black">
+				<KeepAlive>
+					<component :is="activeComponent" :statData="statData"></component>
+				</KeepAlive>
+			</div>
 		</div>
 	</div>
 </template>
 
 <script setup>
-import TensorSwapActiveOrders from '../components/TensorSwapActiveOrders.vue'
-import { ref, shallowRef, markRaw, watch, onMounted, defineProps } from 'vue'
+import { ref, shallowRef, watch, onMounted, defineProps } from 'vue'
 import TSActiveListings from '../components/TSActiveListings.vue'
+import TSActiveOrders from '../components/TSActiveOrders.vue'
+import HSActiveOrders from '../components/HSActiveOrders.vue'
 import Activities from '../components/Activities.vue'
 import VueChart from '../components/VueChart.vue'
 import Stat from '../components/Stat.vue'
@@ -48,15 +56,14 @@ let chartData = ref([])
 
 let statData = ref([])
 
-let activeComponent = ref(markRaw(TSActiveListings))
+let activeComponent = shallowRef(TSActiveListings)
 
 onMounted(getData)
 
 watch(() => props.symbol, getData);
 
-function setActive(activeComponent) {
-	activeComponent.value = markRaw(activeComponent)
-	console.log(activeComponent.value)
+function setActive(active) {
+	activeComponent.value = active
 }
 
 async function getData() {
@@ -67,9 +74,8 @@ async function getData() {
 
 </script>
 
-<style lang="scss" scoped>
-
-.stat-bg {
-	background-color: $black;
-}
+<style scoped>
+	.nav-link:not(.active) {
+		cursor: pointer;
+	}
 </style>

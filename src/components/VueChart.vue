@@ -4,10 +4,11 @@
 
 <script setup>
 import { TitleComponent, TooltipComponent, ToolboxComponent, LegendComponent, GridComponent, DataZoomComponent } from "echarts/components";
-import { CandlestickChart, BarChart } from "echarts/charts";
-import { ref, watch, provide, defineProps } from "vue";
-import { CanvasRenderer } from "echarts/renderers";
-import VChart, { THEME_KEY } from "vue-echarts";
+import { CandlestickChart, BarChart } from 'echarts/charts'
+import { useBuidDateString } from '@/services/composables'
+import { ref, watch, provide, defineProps } from 'vue'
+import { CanvasRenderer } from 'echarts/renderers'
+import VChart, { THEME_KEY } from 'vue-echarts'
 import { use } from "echarts/core";
 
 use([
@@ -99,7 +100,7 @@ function mapVolumeData() {
 
 	for (let i in props.chartData['t']) {
 		data.push([
-			buidDateString(new Date(props.chartData['t'][i] * 1000)),
+			useBuidDateString(props.chartData['t'][i] * 1000),
 			props.chartData['v'][i],
 		])
 	}
@@ -124,12 +125,7 @@ function mapOHLCData() {
 
 function buildxAxisData() {
 
-	return props.chartData['t'].map(t => buidDateString(new Date(t * 1000)))
-}
-
-function buidDateString(_Date) {
-		
-	return _Date.toLocaleDateString()+' '+(_Date.toLocaleTimeString())
+	return props.chartData['t'].map(t => useBuidDateString(t * 1000))
 }
 
 </script>
